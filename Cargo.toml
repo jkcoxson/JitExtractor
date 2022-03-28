@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 rusty_libimobiledevice = { version = "*", features = [ "static" ], path = "../rusty_libimobiledevice" }
+directories = { version = "*" }

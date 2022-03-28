@@ -2,6 +2,7 @@
 
 use std::{fs::File, io::Write};
 
+use directories::UserDirs;
 use rusty_libimobiledevice::{libimobiledevice::get_devices, userpref::read_pair_record};
 
 fn main() {
@@ -50,15 +51,18 @@ fn main() {
         match read_pair_record(device.get_udid().clone()) {
             Ok(pair_record) => {
                 // Save pair_record to file
-                let mut file =
-                    match File::create(format!("{}.mobilepairingfile", device.get_udid())) {
-                        Ok(f) => f,
-                        Err(e) => {
-                            println!("Unable to create file {:?}", e);
-                            pause();
-                            return;
-                        }
-                    };
+                let user_dirs = UserDirs::new().unwrap();
+                let desktop_dir = user_dirs.desktop_dir().unwrap();
+                let mut file = match File::create(
+                    desktop_dir.join(format!("{}.mobilepairingfile", device.get_udid())),
+                ) {
+                    Ok(f) => f,
+                    Err(e) => {
+                        println!("Unable to create file {:?}", e);
+                        pause();
+                        return;
+                    }
+                };
                 match file.write_all(pair_record.to_string().as_bytes()) {
                     Ok(_) => println!(
                         "Pair record saved to {}.mobilepairingfile",
@@ -77,13 +81,14 @@ fn main() {
                 println!("Unable to read pair record {:?}", e);
                 println!("Pairing...");
                 match lockdown.pair(None) {
-                    Ok(_) => (),
+                    Ok(_) => println!("Paired!"),
                     Err(e) => {
                         println!("Unable to pair {:?}", e);
                         pause();
                         return;
                     }
                 };
+                pause();
             }
         }
     }
