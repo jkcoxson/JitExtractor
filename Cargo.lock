@@ -159,6 +159,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9a3a5bfb195931eeb336b2a7b4d761daec841b97f947d34394601737a7bba5e4"
 
 [[package]]
+name = "jit_extractor"
+version = "0.1.0"
+dependencies = [
+ "rusty_libimobiledevice",
+]
+
+[[package]]
 name = "lazy_static"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -215,13 +222,6 @@ checksum = "a8903e5a29a317527874d0402f867152a3d21c908bb0b933e416c65e301d4c36"
 dependencies = [
  "memchr",
  "minimal-lexical",
-]
-
-[[package]]
-name = "pairing_file_extractor"
-version = "0.1.0"
-dependencies = [
- "rusty_libimobiledevice",
 ]
 
 [[package]]

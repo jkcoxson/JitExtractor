@@ -10,7 +10,7 @@ fn main() {
         Ok(devices) => devices,
         Err(e) => {
             println!(
-                "Unable to get devices, do you have a usbmux daemon? - {:?}",
+                "Unable to get devices, have you installed iTunes and started it? - {:?}",
                 e
             );
             pause();
@@ -24,7 +24,7 @@ fn main() {
     }
     let mut device = None;
     for i in devices {
-        if i.network == false {
+        if i.get_network() == false {
             device = Some(i);
             break;
         }
@@ -36,7 +36,7 @@ fn main() {
     }
     let device = device.unwrap();
 
-    let lockdown = match device.new_lockdownd_client("pairing_file_extractor".to_string()) {
+    let lockdown = match device.new_lockdownd_client("jit_extractor".to_string()) {
         Ok(l) => l,
         Err(e) => {
             println!("Unable to start lockdown client {:?}", e);
@@ -47,19 +47,23 @@ fn main() {
 
     loop {
         println!("Fetching pair record...");
-        match read_pair_record(device.udid.clone()) {
+        match read_pair_record(device.get_udid().clone()) {
             Ok(pair_record) => {
                 // Save pair_record to file
-                let mut file = match File::create(format!("{}.mobilepairingfile", device.udid)) {
-                    Ok(f) => f,
-                    Err(e) => {
-                        println!("Unable to create file {:?}", e);
-                        pause();
-                        return;
-                    }
-                };
+                let mut file =
+                    match File::create(format!("{}.mobilepairingfile", device.get_udid())) {
+                        Ok(f) => f,
+                        Err(e) => {
+                            println!("Unable to create file {:?}", e);
+                            pause();
+                            return;
+                        }
+                    };
                 match file.write_all(pair_record.to_string().as_bytes()) {
-                    Ok(_) => println!("Pair record saved to {}.mobilepairingfile", device.udid),
+                    Ok(_) => println!(
+                        "Pair record saved to {}.mobilepairingfile",
+                        device.get_udid()
+                    ),
                     Err(e) => {
                         println!("Unable to write to file {:?}", e);
                         pause();

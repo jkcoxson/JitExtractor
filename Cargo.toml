@@ -1,5 +1,5 @@
 [package]
-name = "pairing_file_extractor"
+name = "jit_extractor"
 version = "0.1.0"
 edition = "2021"
 
