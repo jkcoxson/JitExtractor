@@ -50,6 +50,8 @@ fn main() {
         println!("Fetching pair record...");
         match read_pair_record(device.get_udid().clone()) {
             Ok(pair_record) => {
+                // Remove escrow keybag from pair record
+                pair_record.dict_remove_item("EscrowBag").unwrap();
                 // Save pair_record to file
                 let user_dirs = UserDirs::new().unwrap();
                 let desktop_dir = user_dirs.desktop_dir().unwrap();
@@ -65,7 +67,7 @@ fn main() {
                 };
                 match file.write_all(pair_record.to_string().as_bytes()) {
                     Ok(_) => println!(
-                        "Pair record saved to {}.mobilepairingfile",
+                        "Pair record saved to your desktop at {}.mobilepairingfile",
                         device.get_udid()
                     ),
                     Err(e) => {
