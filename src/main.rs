@@ -49,9 +49,13 @@ fn main() {
     loop {
         println!("Fetching pair record...");
         match read_pair_record(device.get_udid().clone()) {
-            Ok(pair_record) => {
+            Ok(mut pair_record) => {
                 // Remove escrow keybag from pair record
                 pair_record.dict_remove_item("EscrowBag").unwrap();
+                // Add udid to pair record
+                pair_record
+                    .dict_set_item("UDID", device.get_udid().into())
+                    .unwrap();
                 // Save pair_record to file
                 let user_dirs = UserDirs::new().unwrap();
                 let desktop_dir = user_dirs.desktop_dir().unwrap();
