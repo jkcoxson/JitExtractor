@@ -52,6 +52,10 @@ fn main() {
             Ok(mut pair_record) => {
                 // Remove escrow keybag from pair record
                 pair_record.dict_remove_item("EscrowBag").unwrap();
+                // Remove SystemBUID
+                pair_record.dict_remove_item("SystemBUID").unwrap();
+                // Remove WiFiMACAddress
+                pair_record.dict_remove_item("WiFiMACAddress").unwrap();
                 // Add udid to pair record
                 pair_record
                     .dict_set_item("UDID", device.get_udid().into())
